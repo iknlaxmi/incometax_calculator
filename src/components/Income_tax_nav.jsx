@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Navbar,
@@ -8,9 +8,14 @@ import {
   IconButton,
   Card,
 } from "@material-tailwind/react";
+import { useLocation } from "react-router-dom";
 
 function Income_tax_nav() {
   const [openNav, setOpenNav] = React.useState(false);
+  const location = useLocation();
+  const pathname = location.pathname;
+  console.log("path", pathname);
+  const [path, setPath] = useState(1);
 
   React.useEffect(() => {
     window.addEventListener(
@@ -19,15 +24,32 @@ function Income_tax_nav() {
     );
   }, []);
 
+  useEffect(() => {
+    console.log(pathname);
+    if (pathname === "/") {
+      setPath(1);
+    } else if (pathname === "/income_details") {
+      setPath(2);
+    } else if (pathname === "/deductions") {
+      setPath(3);
+    } else if (pathname === "/summary") {
+      setPath(4);
+    }
+  }, [pathname]);
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
       <Typography
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal"
+        className="p-1 font-bold"
       >
-        <a href="#" className="flex items-center">
+        <a
+          href="/"
+          className={
+            path === 1 ? "flex items-center text-blue-600" : "flex items-center"
+          }
+        >
           1.Basic Details
         </a>
       </Typography>
@@ -35,9 +57,14 @@ function Income_tax_nav() {
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal"
+        className="p-1 font-bold"
       >
-        <a href="#" className="flex items-center">
+        <a
+          href="/income_details"
+          className={
+            path === 2 ? "flex items-center text-blue-600" : "flex items-center"
+          }
+        >
           2. Income Details
         </a>
       </Typography>
@@ -45,9 +72,14 @@ function Income_tax_nav() {
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal"
+        className="p-1 font-bold"
       >
-        <a href="#" className="flex items-center">
+        <a
+          href="/deductions"
+          className={
+            path === 3 ? "flex items-center text-blue-600" : "flex items-center"
+          }
+        >
           3. Deductions
         </a>
       </Typography>
@@ -55,9 +87,14 @@ function Income_tax_nav() {
         as="li"
         variant="small"
         color="blue-gray"
-        className="p-1 font-normal"
+        className="p-1 font-bold"
       >
-        <a href="#" className="flex items-center">
+        <a
+          href="/summary"
+          className={
+            path === 4 ? "flex items-center text-blue-600" : "flex items-center"
+          }
+        >
           4. Summary
         </a>
       </Typography>
@@ -65,13 +102,13 @@ function Income_tax_nav() {
   );
 
   return (
-    <div className="-m-6 max-h-[768px] w-[calc(100%+48px)] overflow-scroll">
+    <div className="-m-6 max-h-[768px] w-[calc(100%+48px)] ">
       <Navbar className="sticky top-0 z-10 h-max max-w-full rounded-none px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between text-blue-gray-900">
           <Typography
             as="a"
-            href="#"
-            className="mr-4 cursor-pointer py-1.5 font-medium"
+            href="/"
+            className="mr-4 cursor-pointer py-1.5 font-extrabold"
           >
             Income Tax Calculator
           </Typography>
@@ -117,17 +154,7 @@ function Income_tax_nav() {
             </IconButton>
           </div>
         </div>
-        <MobileNav open={openNav}>
-          {navList}
-          <div className="flex items-center gap-x-1">
-            <Button fullWidth variant="text" size="sm" className="">
-              <span>Log In</span>
-            </Button>
-            <Button fullWidth variant="gradient" size="sm" className="">
-              <span>Sign in</span>
-            </Button>
-          </div>
-        </MobileNav>
+        <MobileNav open={openNav}>{navList}</MobileNav>
       </Navbar>
     </div>
   );
