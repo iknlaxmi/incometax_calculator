@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Income_tax_nav from "./Income_tax_nav";
 import { Navigate } from "react-router-dom";
 import { Button } from "@material-tailwind/react";
 import { Card, Typography } from "@material-tailwind/react";
+import { useRecoilValue } from "recoil";
+import { yearState } from "./Basic_details";
 const TABLE_HEAD = ["", "Old Regime", "New Regime"];
 const TABLE_ROWS = [
   {
@@ -29,9 +31,13 @@ const TABLE_ROWS = [
 
 const Summary = () => {
   const [isClicked, setIsClicked] = useState(false);
+  const yearData = useRecoilValue(yearState);
+  console.log("Summary", yearData);
   const handleTryTaxCalculate = () => {
     setIsClicked(true);
+    localStorage.clear();
   };
+
   return (
     <div>
       <div className="mt-16 text-center font-bold">

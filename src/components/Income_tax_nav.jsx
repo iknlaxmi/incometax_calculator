@@ -14,7 +14,7 @@ function Income_tax_nav() {
   const [openNav, setOpenNav] = React.useState(false);
   const location = useLocation();
   const pathname = location.pathname;
-  console.log("path", pathname);
+
   const [path, setPath] = useState(1);
 
   React.useEffect(() => {
@@ -25,7 +25,6 @@ function Income_tax_nav() {
   }, []);
 
   useEffect(() => {
-    console.log(pathname);
     if (pathname === "/") {
       setPath(1);
     } else if (pathname === "/income_details") {
