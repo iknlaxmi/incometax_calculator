@@ -5,37 +5,19 @@ import { Button } from "@material-tailwind/react";
 import { Card, Typography } from "@material-tailwind/react";
 import { useRecoilValue } from "recoil";
 import { yearState } from "./Basic_details";
+import { incometax_tableState } from "./Deductions";
 const TABLE_HEAD = ["", "Old Regime", "New Regime"];
-const TABLE_ROWS = [
-  {
-    item: "Total Income",
-    old_regime_val: 123,
-    new_regime_val: 123,
-  },
-  {
-    item: "Excemptions & Deductions",
-    old_regime_val: 123,
-    new_regime_val: 123,
-  },
-  {
-    item: "Taxable Income",
-    old_regime_val: 123,
-    new_regime_val: 123,
-  },
-  {
-    item: "Tax due on above",
-    old_regime_val: 123,
-    new_regime_val: 123,
-  },
-];
 
 const Summary = () => {
+  const TABLE_ROWS = useRecoilValue(incometax_tableState);
   const [isClicked, setIsClicked] = useState(false);
   const yearData = useRecoilValue(yearState);
   console.log("Summary", yearData);
   const handleTryTaxCalculate = () => {
     setIsClicked(true);
     localStorage.clear();
+    localStorage.setItem("year", "option1");
+    localStorage.setItem("age", "below60");
   };
 
   return (
@@ -50,7 +32,7 @@ const Summary = () => {
         >
           Try the calculatoe again
         </Button>
-        {isClicked && <Navigate to="/deductions" replace={true} />}
+        {isClicked && <Navigate to="/" replace={true} />}
       </div>
       <div>
         <Card className="h-full w-full overflow-scroll">
@@ -98,7 +80,7 @@ const Summary = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {old_regime_val}
+                          Rs. {old_regime_val}
                         </Typography>
                       </td>
                       <td className={classes}>
@@ -107,7 +89,7 @@ const Summary = () => {
                           color="blue-gray"
                           className="font-normal"
                         >
-                          {new_regime_val}
+                          Rs. {new_regime_val}
                         </Typography>
                       </td>
                     </tr>
