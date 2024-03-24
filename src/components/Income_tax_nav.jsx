@@ -59,7 +59,7 @@ function Income_tax_nav() {
         className="p-1 font-bold"
       >
         <a
-          href="/income_details"
+          href="./income_details"
           className={
             path === 2 ? "flex items-center text-blue-600" : "flex items-center"
           }
