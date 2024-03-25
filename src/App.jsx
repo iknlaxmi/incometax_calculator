@@ -6,8 +6,13 @@ import Income_tax_nav from "./components/Income_tax_nav";
 import Income_details from "./components/Income_details";
 import Deductions from "./components/Deductions";
 import Summary from "./components/Summary";
+import { useEffect, useRef } from "react";
 
 function App() {
+  // useEffect(() => {
+  //   localStorage.clear(); // Clears all items in local storage
+  // }, []);
+
   return (
     <>
       <Router>

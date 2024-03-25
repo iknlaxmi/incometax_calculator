@@ -10,6 +10,7 @@ const TABLE_HEAD = ["", "Old Regime", "New Regime"];
 
 const Summary = () => {
   const TABLE_ROWS = useRecoilValue(incometax_tableState);
+
   const [isClicked, setIsClicked] = useState(false);
   const yearData = useRecoilValue(yearState);
   console.log("Summary", yearData);
@@ -30,7 +31,7 @@ const Summary = () => {
           className="bg-blue-500 text-black"
           onClick={handleTryTaxCalculate}
         >
-          Try the calculatoe again
+          Try the calculate again
         </Button>
         {isClicked && <Navigate to="/" replace={true} />}
       </div>

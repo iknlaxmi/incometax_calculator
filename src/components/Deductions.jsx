@@ -5,6 +5,7 @@ import Income_tax_nav from "./Income_tax_nav";
 import { Tax_calculate_newregime } from "./Tax_calculate_newregime";
 import { Tax_calculate_oldregime } from "./Tax_calculate_oldregime";
 import { useRecoilState, atom } from "recoil";
+let data_tableList = [];
 
 let standard_deduction = 50000;
 // let TABLE_ROWS = [
@@ -49,6 +50,9 @@ let standard_deduction = 50000;
 //     new_regime_val: 123,
 //   },
 // ];
+import { recoilPersist } from "recoil-persist";
+
+const { persistAtom } = recoilPersist();
 export const incometax_tableState = atom({
   key: "incometax",
   default: [
@@ -93,13 +97,14 @@ export const incometax_tableState = atom({
       new_regime_val: 0,
     },
   ],
+  effects_UNSTABLE: [persistAtom],
 });
 const Deductions = () => {
   const [isClicked, setIsClicked] = useState(false);
 
   const [incometaxTableList, setincometaxTableList] =
     useRecoilState(incometax_tableState);
-
+  console.log("imppppp", incometaxTableList);
   const [basicDeduction80C, setBasicDeduction80C] = useState(
     localStorage.getItem("basicDeduction80C") || 0
   );
@@ -349,6 +354,18 @@ const Deductions = () => {
     }
 
     //Tax calculations for new regime
+    let modified_component_basedon_rentIncome_interestHomeloanLetOut = 0;
+
+    if (interestHLoanLetOut === 0) {
+      modified_component_basedon_rentIncome_interestHomeloanLetOut =
+        0.3 * rentalIncome;
+    } else if (rentalIncome < interestHLoanLetOut) {
+      modified_component_basedon_rentIncome_interestHomeloanLetOut =
+        rentalIncome;
+    } else {
+      modified_component_basedon_rentIncome_interestHomeloanLetOut =
+        rentalIncome;
+    }
     let total_income_newregime =
       incomeFromSalary +
       incomeFromInterest +
@@ -356,7 +373,9 @@ const Deductions = () => {
       incomeFromDigitalAssets +
       otherIncome;
     let taxable_income_newregime =
-      total_income_newregime - standard_deduction - rentalIncome * 0.3;
+      total_income_newregime -
+      standard_deduction -
+      modified_component_basedon_rentIncome_interestHomeloanLetOut;
     let incometax_newregime = Tax_calculate_newregime(
       ageVal,
       taxable_income_newregime
@@ -412,14 +431,29 @@ const Deductions = () => {
     }
     //Modified interest from deposites from 80TTA
     let modified_interestFromDeposits80TTA = 0;
-    if (interestFromDeposits80TTAFormatted > incomeFromInterest) {
-      modified_interestFromDeposits80TTA = incomeFromInterest;
+
+    // if (interestFromDeposits80TTAFormatted > incomeFromInterest) {
+    //   modified_interestFromDeposits80TTA = incomeFromInterest;
+    // } else {
+    //   modified_interestFromDeposits80TTA = interestFromDeposits80TTAFormatted;
+    // }
+    // if (modified_interestFromDeposits80TTA > 10000) {
+    //   modified_interestFromDeposits80TTA = 10000;
+    // }
+    if (ageVal === "below60") {
+      if (incomeFromInterest >= 10000) {
+        modified_interestFromDeposits80TTA = 10000;
+      } else {
+        modified_interestFromDeposits80TTA = incomeFromInterest;
+      }
     } else {
-      modified_interestFromDeposits80TTA = interestFromDeposits80TTAFormatted;
+      if (incomeFromInterest >= 50000) {
+        modified_interestFromDeposits80TTA = 50000;
+      } else {
+        modified_interestFromDeposits80TTA = incomeFromInterest;
+      }
     }
-    if (modified_interestFromDeposits80TTA > 10000) {
-      modified_interestFromDeposits80TTA = 10000;
-    }
+
     //Housing loan - 80EEA(first time buyers)
     let modified_interestOnHouseLoan80EEA = 0;
     if (interestOnHouseLoan80EEAFormatted > 150000) {
@@ -468,14 +502,14 @@ const Deductions = () => {
     );
     let cess_oldregime = incometax_oldregime * 0.04;
     let total_incometax_oldregime = incometax_oldregime + cess_oldregime;
-
+    console.log("imp", incometax_oldregime);
     //Update table
     console.log(
       "total income old and new",
       total_income_oldregime,
       total_income_newregime
     );
-    let data_tableList = [];
+
     if (total_income_newregime === 0 || total_income_oldregime === 0) {
       data_tableList = [
         {
@@ -564,6 +598,7 @@ const Deductions = () => {
       ];
     }
     setincometaxTableList(data_tableList);
+
     // fill the data for table
   }, [isClicked]);
 
@@ -615,7 +650,10 @@ const Deductions = () => {
         </div>
         <div className="w-1/2 p-4">
           <div className="ml-8">
-            <h6 className="mt-4">Interest from Deposits - 80TTA</h6>
+            <h6 className="mt-4">
+              Interest from Deposits - 80TTA(Below 60 years) /80TTB (For Senior
+              citizens)
+            </h6>
             <input
               type="text"
               className="mt-2  border-blue-500 border-solid border-2 rounded-lg w-80 h-10 pl-4"
