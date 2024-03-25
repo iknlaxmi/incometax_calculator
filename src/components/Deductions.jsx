@@ -488,13 +488,21 @@ const Deductions = () => {
       modified_homeLoanSelfOccupied_LetOut =
         modified_homeLoanSelfOccupied_LetOut_total;
     }
+    let modified_rental_interesthomeloan_Oldregime = 0;
+    if (interestHLoanLetOut === 0) {
+      modified_rental_interesthomeloan_Oldregime = 0.3 * rentalIncome;
+    } else if (rentalIncome <= interestHLoanLetOut) {
+      modified_rental_interesthomeloan_Oldregime = rentalIncome * 0.3;
+    } else {
+      modified_rental_interesthomeloan_Oldregime = 0.3 * rentalIncome;
+    }
     // taxable income old and new regime
     let taxable_income_oldregime =
       total_income_oldregime -
       chapterIVADeductions -
       standard_deduction -
       exemptAllowances -
-      rentalIncome * 0.3 -
+      modified_rental_interesthomeloan_Oldregime -
       modified_homeLoanSelfOccupied_LetOut;
     let incometax_oldregime = Tax_calculate_oldregime(
       ageVal,
